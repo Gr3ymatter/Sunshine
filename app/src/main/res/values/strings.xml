@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Sunshine</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -10,13 +10,13 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Label for the location preference [CHAR LIMIT=30] -->
-    +    <string name="pref_location_label">Location</string>
-    +
-    +    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
-    +    <string name="pref_location_key" translatable="false">location</string>
-    +
-    +    <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
-    +    <string name="pref_location_default" translatable="false">94043</string>
+    <string name="pref_location_label">Location</string>
+
+    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_location_key" translatable="false">location</string>
+
+    <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
+    <string name="pref_location_default" translatable="false">94043</string>
 
     <string name="pref_units_label">Units</string>
     <string name="pref_units_key">units</string>
@@ -24,6 +24,16 @@
     <string name="pref_units_imperial">imperial</string>
     <string name="action_preflocation_label">View Preferred Location</string>
 
+    <!-- Temperature formats in degrees [CHAR LIMIT=NONE] -->
+    <string name="format_temperature"><xliff:g id="temp">%1.0f</xliff:g>\u00B0</string>
 
+    <!-- Date label when displaying today's weather forecast [CHAR LIMIT=20] -->
+    <string name="today">Today</string>
+
+    <!-- Date label when displaying tomorrow's weather forecast [CHAR LIMIT=20] -->
+    <string name="tomorrow">Tomorrow</string>
+
+    <!-- Date format for displaying day of week and date (i.e. Mon Jun 1) [CHAR LIMIT=20] -->
+    <string name="format_full_friendly_date"><xliff:g id="day">%1$s</xliff:g>, <xliff:g id="date">%2$s</xliff:g></string>
 
 </resources>

@@ -34,8 +34,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         if(data.moveToFirst()){
-            String high = Utility.formatTemperature(data.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP), Utility.isMetric(getActivity()));
-            String low = Utility.formatTemperature(data.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(getActivity()));
+            String high = Utility.formatTemperature(getActivity(),data.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP), Utility.isMetric(getActivity()));
+            String low = Utility.formatTemperature(getActivity(), data.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP), Utility.isMetric(getActivity()));
            String highAndLow = high+"/"+low;
             String weatherString = Utility.formatDate(data.getLong(ForecastFragment.COL_WEATHER_DATE)) +
                     " - " + data.getString(ForecastFragment.COL_WEATHER_DESC) +
