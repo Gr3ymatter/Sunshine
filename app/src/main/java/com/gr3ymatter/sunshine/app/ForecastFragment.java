@@ -61,6 +61,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_WEATHER_CONDITION_ID = 6;
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
+    static final int COL_HUMIDITY = 9;
+    static final int COL_WIND_SPEED = 10;
+    static final int COL_PRESSURE = 11;
+    static final int COL_WIND_DIRECTION = 12;
+
+
+
 
     public ForecastFragment() {
     }

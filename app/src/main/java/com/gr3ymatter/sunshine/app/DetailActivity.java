@@ -6,7 +6,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 
 public class DetailActivity extends ActionBarActivity {
@@ -23,12 +22,12 @@ public class DetailActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detail, menu);
 
-        android.support.v4.app.Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+        DetailActivityFragment fragment = (DetailActivityFragment)getSupportFragmentManager().findFragmentById(R.id.fragment);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        TextView forecastDetail = (TextView)fragment.getView().findViewById(R.id.detail_forecastString);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, forecastDetail.getText() + " #SunshineApp");
+      //  TextView forecastDetail = (TextView)fragment.getView().findViewById(R.id.detail_forecastString);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, fragment.shareString + " #SunshineApp");
         android.support.v7.widget.ShareActionProvider provider = (android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.menu_item_share));
         if(provider != null)
             provider.setShareIntent(shareIntent);

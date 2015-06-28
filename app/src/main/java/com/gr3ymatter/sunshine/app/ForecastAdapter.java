@@ -3,6 +3,7 @@ package com.gr3ymatter.sunshine.app;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,8 +108,18 @@ public class ForecastAdapter extends CursorAdapter {
         // Read weather icon ID from cursor
 
         ViewHolder holder = (ViewHolder) view.getTag();
-        holder.iconView.setImageResource(R.drawable.ic_launcher);
-        int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
+        int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
+        if(getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY)
+            {
+                Log.d("RESOURCE TAG", Integer.toString(weatherId));
+                holder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+            }
+        else if(getItemViewType(cursor.getPosition()) == VIEW_TYPE_FUTURE_DAY)
+        {
+            holder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherId));
+        }
+
+
 //        // Use placeholder image for now
 
         // TODO Read date from cursor
