@@ -1,7 +1,7 @@
 package com.gr3ymatter.sunshine.app;
 
-import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -32,6 +32,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     TextView mHighText;
     ImageView mIconView;
 
+    Uri mUri;
+
+    public static String DETAIL_URI = "Uri";
     public  String shareString;
 
     private static final String[] FORECAST_COLUMNS_ALL = {
@@ -58,13 +61,47 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     final int DETAIL_LOADER = 0;
 
+    public static DetailActivityFragment newInstance(Uri uri){
+
+        DetailActivityFragment f = new DetailActivityFragment();
+
+        Bundle args = new Bundle();
+        args.putParcelable("Uri", uri);
+        f.setArguments(args);
+        return f;
+    }
+
     public DetailActivityFragment() {
+    }
+
+
+
+      void onLocationChanged( String newLocation ) {
+               // replace the uri, since the location has changed
+                 Uri uri = mUri;
+               if (null != uri) {
+                       long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+                       Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+                       mUri = updatedUri;
+                       getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+                   }
+            }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        onLocationChanged(Utility.getPreferredLocation(getActivity()));
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-       return new CursorLoader(getActivity(), getActivity().getIntent().getData(), FORECAST_COLUMNS_ALL,null, null, null);
+
+        if(mUri != null)
+            return new CursorLoader(getActivity(), mUri, FORECAST_COLUMNS_ALL,null, null, null);
+        else
+            return null;
     }
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
@@ -102,6 +139,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+
         getLoaderManager().initLoader(DETAIL_LOADER, savedInstanceState, this);
     }
 
@@ -109,25 +148,27 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mDateText = (TextView)rootView.findViewById(R.id.list_item_date_textview);
-        mDayText = (TextView)rootView.findViewById(R.id.list_item_day_textview);
-        mForecastText = (TextView)rootView.findViewById(R.id.list_item_forecast_textview);
-        mHumidityText = (TextView)rootView.findViewById(R.id.list_item_humidity_textview);
-        mPressureText = (TextView) rootView.findViewById(R.id.list_item_pressure_textview);
-        mWindText = (TextView) rootView.findViewById(R.id.list_item_wind_textview);
-        mLowText = (TextView) rootView.findViewById(R.id.list_item_low_textview);
-        mHighText = (TextView) rootView.findViewById(R.id.list_item_high_textview);
-        mIconView = (ImageView) rootView.findViewById(R.id.list_item_icon);
 
-        Intent intent = getActivity().getIntent();
+        if(getArguments()!= null){
+            mUri = getArguments().getParcelable(DETAIL_URI);
 
-        String mForecastStr;
-
-        if (intent != null) {
-            mForecastStr = intent.getDataString();
-          //  forecastTextView.setText(mForecastStr);
         }
+
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        mDateText = (TextView)rootView.findViewById(R.id.detail_date_textview);
+        mDayText = (TextView)rootView.findViewById(R.id.detail_day_textview);
+        mForecastText = (TextView)rootView.findViewById(R.id.detail_forecast_textview);
+        mHumidityText = (TextView)rootView.findViewById(R.id.detail_humidity_textview);
+        mPressureText = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+        mWindText = (TextView) rootView.findViewById(R.id.detail_wind_textview);
+        mLowText = (TextView) rootView.findViewById(R.id.detail_low_textview);
+        mHighText = (TextView) rootView.findViewById(R.id.detail_high_textview);
+        mIconView = (ImageView) rootView.findViewById(R.id.detail_icon);
+
+
+
+
+
         return rootView;
     }
 

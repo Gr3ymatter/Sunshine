@@ -3,7 +3,6 @@ package com.gr3ymatter.sunshine.app;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,8 @@ public class ForecastAdapter extends CursorAdapter {
 
     int VIEW_TYPE_TODAY = 0;
     int VIEW_TYPE_FUTURE_DAY = 1;
+
+    private boolean mUseSpecialToday =false;
 
 
     private class ViewHolder {
@@ -111,7 +112,6 @@ public class ForecastAdapter extends CursorAdapter {
         int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
         if(getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY)
             {
-                Log.d("RESOURCE TAG", Integer.toString(weatherId));
                 holder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
             }
         else if(getItemViewType(cursor.getPosition()) == VIEW_TYPE_FUTURE_DAY)
@@ -119,12 +119,11 @@ public class ForecastAdapter extends CursorAdapter {
             holder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherId));
         }
 
-
 //        // Use placeholder image for now
 
         // TODO Read date from cursor
         long date = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
-        holder.dateView.setText(Utility.getFormattedMonthDay(mContext, date));
+        holder.dateView.setText(Utility.getFriendlyDayString(mContext, date));
         // TODO Read weather forecast from cursor
         String forcast = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
         holder.forecastView.setText(forcast);
@@ -143,6 +142,11 @@ public class ForecastAdapter extends CursorAdapter {
     }
 
 
+    public void setSpecialTodayView(boolean isSpecialTodayView){
+        mUseSpecialToday = isSpecialTodayView;
+    }
+
+
     @Override
     public int getViewTypeCount() {
                 return 2;
@@ -150,6 +154,6 @@ public class ForecastAdapter extends CursorAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return (position == 0) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+        return (position == 0 && mUseSpecialToday) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
     }
 }

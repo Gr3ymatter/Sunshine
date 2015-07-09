@@ -3,16 +3,18 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:padding="16dp"
     android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:background="@drawable/touch_selector"
     android:minHeight="?android:listPreferredItemHeight"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
         android:padding="16dp"
-        android:gravity="center">
+        android:gravity="center_horizontal">
 
         <TextView
             android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -26,7 +28,7 @@
             android:text="21"
             />
 
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:id="@+id/list_item_low_textview"
             android:text="18"
@@ -35,7 +37,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="16dp"
@@ -49,7 +51,7 @@
 
             />
 
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:id="@+id/list_item_forecast_textview"
             android:text="Clear"

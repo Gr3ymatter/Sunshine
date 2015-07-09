@@ -11,7 +11,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/ForecastTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +30,8 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings"
+            android:theme="@style/SettingsTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gr3ymatter.sunshine.app.MainActivity" />
@@ -37,6 +40,11 @@
         <provider
             android:authorities="com.gr3ymatter.sunshine.app"
             android:name=".data.WeatherProvider" />
+        <service android:name="services.SunshineService"></service>
+
+        <receiver android:name="services.SunshineService$AlarmReciever" android:enabled="true"/>
+
+
     </application>
 
 </manifest>

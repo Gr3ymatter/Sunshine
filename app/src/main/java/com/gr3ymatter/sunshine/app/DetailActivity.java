@@ -1,7 +1,9 @@
 package com.gr3ymatter.sunshine.app;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -10,10 +12,17 @@ import android.view.MenuItem;
 
 public class DetailActivity extends ActionBarActivity {
 
+
+    String DETAILFRAGMENT_TAG = "DFTAG";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        if(savedInstanceState == null){
+            Uri uri = getIntent().getData();
+            FragmentManager fragmentManager = this.getSupportFragmentManager();
+            fragmentManager.beginTransaction().add(R.id.weather_detail_container, DetailActivityFragment.newInstance(uri), DETAILFRAGMENT_TAG).commit();
+        }
     }
 
 
@@ -22,7 +31,7 @@ public class DetailActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detail, menu);
 
-        DetailActivityFragment fragment = (DetailActivityFragment)getSupportFragmentManager().findFragmentById(R.id.fragment);
+        DetailActivityFragment fragment = (DetailActivityFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);

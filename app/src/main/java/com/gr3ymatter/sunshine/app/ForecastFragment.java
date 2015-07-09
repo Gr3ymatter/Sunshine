@@ -1,5 +1,8 @@
 package com.gr3ymatter.sunshine.app;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -10,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,16 +25,22 @@ import android.widget.ListView;
 
 import com.gr3ymatter.sunshine.app.data.WeatherContract;
 
+import services.SunshineService;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ForecastFragment extends Fragment implements  LoaderManager.LoaderCallbacks<Cursor>{
 
    android.support.v4.app.LoaderManager mLoaderManager;
     ForecastAdapter mForecastAdapter;
     final public static String FORECAST_DATA = "forcast_data";
     SharedPreferences pref;
     final int LOADER_ID = 0;
+    final String LIST_POSITION = "position";
+    int mPosition = 0;
+    final public static String LOCATION_STRING = "location_string";
+    ListView listView;
 
     public static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
@@ -72,6 +82,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public ForecastFragment() {
     }
 
+
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
@@ -91,7 +103,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+
+
         mForecastAdapter.swapCursor(data);
+        listView.smoothScrollToPosition(mPosition);
+
 
     }
 
@@ -156,13 +172,17 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
 
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
 
+        if(savedInstanceState != null)
+            mPosition = savedInstanceState.getInt(LIST_POSITION);
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        Log.d("FORECASTFRAGMENT", "Attached fragment");
         //Find the ListView You want to populate.
-        final ListView listView =  (ListView)rootView.findViewById(R.id.listview_forecast);
+       listView =  (ListView)rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter); //Bind Data to ListView
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -172,14 +192,22 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (cursor != null) {
-                    String locationSetting = Utility.getPreferredLocation(getActivity());
-                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-                                    locationSetting, cursor.getLong(COL_WEATHER_DATE)
-                            ));
-                    startActivity(intent);
+                mPosition = position;
+                if(cursor != null){
+                    long date = cursor.getLong(COL_WEATHER_DATE);
+                    Uri dateUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(Utility.getPreferredLocation(getActivity()), date);
+                    ((Callback)getActivity()).onItemSelected(dateUri);
                 }
+
+
+//                if (cursor != null) {
+//                    String locationSetting = Utility.getPreferredLocation(getActivity());
+//                    Intent intent = new Intent(getActivity(), DetailActivity.class)
+//                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
+//                                    locationSetting, cursor.getLong(COL_WEATHER_DATE)
+//                            ));
+//                    startActivity(intent);
+//                }
             }
         });
 
@@ -197,13 +225,37 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         return rootView;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(LIST_POSITION, mPosition);
+    }
 
     private void updateWeather(){
         pref =  PreferenceManager.getDefaultSharedPreferences(getActivity());
         String locationString = pref.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
         String unitString = pref.getString(getString(R.string.pref_units_key), getString(R.string.pref_units_metric));
-        new FetchWeatherTask(getActivity()).execute(locationString, unitString);
+
+        Intent serviceIntent = new Intent(getActivity(), SunshineService.class);
+        serviceIntent.putExtra(LOCATION_STRING, locationString);
+        getActivity().startService(serviceIntent);
+
+        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReciever.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
     }
 
-
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
+    }
 }

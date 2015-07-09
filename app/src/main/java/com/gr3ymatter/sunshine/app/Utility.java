@@ -59,10 +59,11 @@ public class Utility {
                 mWindDirection = "NW";
             }
 
-            if(!isMetric){
+            if(!isMetric)
+            {
             speed = 1.604*windSpeed;
             return mContext.getString(R.string.format_wind_mph, speed, mWindDirection);
-        }
+            }
         else
         {
             speed = windSpeed;

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="grey">#cccccc</color>
+    <color name="sunshine_light_blue">#ff64c2f4</color>
+    <color name="sunshine_blue">#ff1ca8f4</color>
+    <color name="sunshine_dark_blue">#0288D1</color>
+
+        <color name="seafoam">#ffc6f9e5</color>
+        <color name="chartreuse">#ffb6e9b5</color>
+        <color name="emerald">#ffa6d9b5</color>
+        <color name="bluegrass">#ff96c9b5</color>
+        <color name="turquoise">#ff86b9b5</color>
+        <color name="slate">#ff76a9b5</color>
+</resources>
