@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Vibrator;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -339,8 +338,8 @@ public class SunshineService extends IntentService {
         public void onReceive(Context context, Intent intent) {
 
             Log.d(this.getClass().getSimpleName().toString(), "Alarm Receiver Fired");
-            Vibrator vibrator = (Vibrator)context.getSystemService(VIBRATOR_SERVICE);
-            vibrator.vibrate(2000);
+           // Vibrator vibrator = (Vibrator)context.getSystemService(VIBRATOR_SERVICE);
+           // vibrator.vibrate(2000);
         }
     }
 
