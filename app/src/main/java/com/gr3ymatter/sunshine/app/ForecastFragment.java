@@ -1,14 +1,10 @@
 package com.gr3ymatter.sunshine.app;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -24,8 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.gr3ymatter.sunshine.app.data.WeatherContract;
-
-import services.SunshineService;
+import com.gr3ymatter.sunshine.app.sync.SunshineSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -41,6 +36,7 @@ public class ForecastFragment extends Fragment implements  LoaderManager.LoaderC
     int mPosition = 0;
     final public static String LOCATION_STRING = "location_string";
     ListView listView;
+
 
     public static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
@@ -222,6 +218,8 @@ public class ForecastFragment extends Fragment implements  LoaderManager.LoaderC
 
           //  }
         //});
+
+
         return rootView;
     }
 
@@ -232,19 +230,22 @@ public class ForecastFragment extends Fragment implements  LoaderManager.LoaderC
     }
 
     private void updateWeather(){
-        pref =  PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String locationString = pref.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
-        String unitString = pref.getString(getString(R.string.pref_units_key), getString(R.string.pref_units_metric));
 
-        Intent serviceIntent = new Intent(getActivity(), SunshineService.class);
-        serviceIntent.putExtra(LOCATION_STRING, locationString);
-        getActivity().startService(serviceIntent);
+        SunshineSyncAdapter.syncImmediately(getActivity());
 
-        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReciever.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
+//        pref =  PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        String locationString = pref.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+//        String unitString = pref.getString(getString(R.string.pref_units_key), getString(R.string.pref_units_metric));
+//
+//        Intent serviceIntent = new Intent(getActivity(), SunshineService.class);
+//        serviceIntent.putExtra(LOCATION_STRING, locationString);
+//        getActivity().startService(serviceIntent);
+//
+//        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReciever.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
+//
+//        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
     }
 
     /**
